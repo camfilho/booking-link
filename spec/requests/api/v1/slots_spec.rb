@@ -10,8 +10,8 @@ RSpec.describe 'Api::V1::Slots', type: :request do
       expect(json_response).to be_a(Array)
       expect(json_response.first).to eq({
         'id' => slot.id,
-        'start' => slot.start_time,
-        'end' => slot.end_time
+        'start' => slot.start_time.iso8601,
+        'end' => slot.end_time.iso8601
       }.as_json)
     end
   end
