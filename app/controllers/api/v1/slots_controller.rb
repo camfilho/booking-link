@@ -9,7 +9,19 @@ module Api
       end
 
       def create
-        head :created
+        duration = slot_params[:duration].to_i
+        start_date = slot_params[:date_time].to_s
+        company_name = slot_params[:company_name].to_s
+
+        slot = Slot.create!(start_time: start_date, end_time: DateTime.parse(start_date).utc + duration.minutes, company_name:)
+
+        render json: {id: slot.id, start: slot.start_time.iso8601, end: slot.end_time.iso8601 }, status: :created
+      end
+
+      private
+
+      def slot_params
+        params.require(:slot).permit(:date_time, :duration)
       end
     end
   end

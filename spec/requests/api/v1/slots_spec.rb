@@ -18,8 +18,14 @@ RSpec.describe 'Api::V1::Slots', type: :request do
 
   describe 'POST /create' do
     it 'returns http success' do
-      post '/api/v1/slots'
+      params = { slot: { date_time: DateTime.now.utc.iso8601, duration: 30 } }
+      post '/api/v1/slots', params: params
       expect(response).to have_http_status(:created)
+      expect(json_response).to eq({
+                                    'id' => Slot.last.id,
+                                    'start' => params[:slot][:date_time],
+                                    'end' => (DateTime.parse(params[:slot][:date_time]).utc + 30.minutes).iso8601
+                                  })
     end
   end
 end
