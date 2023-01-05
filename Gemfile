@@ -61,3 +61,5 @@ group :development do
   gem "web-console"
   gem 'rubocop-rails', require: false
 end
+
+gem "active_model_serializers", "~> 0.10.13"
