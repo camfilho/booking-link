@@ -53,6 +53,7 @@ group :development, :test do
   gem 'database_cleaner-active_record'
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'rspec-rails', '~> 6.0.0'
+  gem 'shoulda-matchers', '~> 5.0'
 end
 
 group :development do

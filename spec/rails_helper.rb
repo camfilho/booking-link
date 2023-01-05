@@ -8,6 +8,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'support/database_cleaner'
+require 'support/shoulda_matcher'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
