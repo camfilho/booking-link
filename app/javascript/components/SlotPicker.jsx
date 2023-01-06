@@ -29,10 +29,15 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
             duration: duration,
           },
         }),
-      }).then(response => response.json())
+      })
+      .then((response, error) => {
+        if(response.ok) {
+          return response.json()
+        }
+        return response.json().then(error => Promise.reject(error));
+      })
     },
     onSuccess: (data) => {
-      console.log({data})
       queryClient.invalidateQueries()
       setAlertData({
         message: {endDate: `${data.end.slice(0,10)} ${data.end.slice(11,16)}`, startDate: `${data.start.slice(0,10)} ${data.start.slice(11,16)}`},
@@ -41,12 +46,13 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
       });
     },
     onError: (error) => {
+      console.log(error)
       setAlertData({
-        message: {error: error.message},
+        message: { error },
         success: false,
         open: true,
       });
-      console.error(error.message);
+      console.error(error);
     },
   });
 
@@ -90,7 +96,7 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
 
   return (
     <div className="col-sm-6">
-      <div className="row overflow-auto" style={{ height: "20vh" }}>
+      <div className="row overflow-auto" style={{ maxHeight: "20vh" }}>
         {generateTimeSlots(date)
           .filter(filterSlots)
           .map((slot) => {

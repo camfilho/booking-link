@@ -13,10 +13,14 @@ module Api
         start_date = slot_params[:date_time].to_s
         company_name = slot_params[:company_name].to_s
 
-        slot = Slot.create!(start_time: start_date, end_time: DateTime.parse(start_date).utc + duration.minutes,
-                            company_name: company_name)
+        slot = Slot.new(start_time: start_date, end_time: DateTime.parse(start_date).utc + duration.minutes,
+                        company_name: company_name)
 
-        render json: SlotSerializer.new(slot).to_json, status: :created
+        if slot.save
+          render json: SlotSerializer.new(slot).to_json, status: :created
+        else
+          render json: slot.errors, status: :unprocessable_entity
+        end
       end
 
       private
