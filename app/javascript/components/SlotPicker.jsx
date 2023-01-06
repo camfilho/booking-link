@@ -1,23 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Slot from "./Slot";
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+
 
 const timeDivision = 15; //minutes
 
 const SlotPicker = ({ date, duration, setAlertData }) => {
-  const [slots, setSlots] = useState([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const url = "/api/v1/slots?date=" + String(date);
-    fetch(url)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then((res) => setSlots(res))
-      .catch(() => console.log("error"));
-  }, [date]);
+  const getSlots = () => fetch("/api/v1/slots?date=" + String(date)).then((res) => res.json())
+  const { isLoading, error, data } = useQuery({ queryKey: [`querySlots${String(date)}`], queryFn: getSlots })
+
+  const mutation = useMutation({
+    mutationFn: (dateTime) => {
+      const token = document.querySelector('meta[name="csrf-token"]').content;
+
+      return fetch("/api/v1/slots", {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          slot: {
+            date_time: dateTime,
+            duration: duration,
+          },
+        }),
+      }).then(response => response.json())
+    },
+    onSuccess: (data) => {
+      console.log({data})
+      queryClient.invalidateQueries()
+      setAlertData({
+        message: {endDate: `${data.end.slice(0,10)} ${data.end.slice(11,16)}`, startDate: `${data.start.slice(0,10)} ${data.start.slice(11,16)}`},
+        success: true,
+        open: true,
+      });
+    },
+    onError: (error) => {
+      setAlertData({
+        message: {error: error.message},
+        success: false,
+        open: true,
+      });
+      console.error(error.message);
+    },
+  });
+
+  const bookedSlots = data?.map((slot) => {
+    return {
+      id: slot.id,
+      end: new Date(slot.end),
+      start: new Date(slot.start),
+    };
+  });
 
   function generateTimeSlots(date) {
     const slots = [];
@@ -36,44 +75,11 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
     return slots;
   }
 
-  const bookSlot = (dateTime) => {
-    console.log("bookSlot", dateTime, duration);
-    const token = document.querySelector('meta[name="csrf-token"]').content;
-
-    fetch("/api/v1/slots", {
-      method: "POST",
-      headers: {
-        "X-CSRF-Token": token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        slot: {
-          date_time: dateTime,
-          duration: duration,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((_data) => {
-        const hoursMinutes = dateTime.split("T")[1].slice(0,5)
-        setAlertData({message: `Success! You have booked a slot at ${date} ${hoursMinutes}`, success: true, open: true})
-      })
-      .catch((error) => {
-         setAlertData({message: "Oops! Something went wrong", success: false, open: true})
-         console.error("Error:", error)
-      });
-  };
+  if (isLoading) return "Loading...";
 
   const filterSlots = (slot) => {
-    const bookedSlots = slots.map((slot) => {
-      return {
-        id: slot.id,
-        end: new Date(slot.end),
-        start: new Date(slot.start),
-      };
-    });
-
     const shiftedSlotTime = slot.getTime() + duration * 60 * 1000;
+
     return !bookedSlots.find((bookedSlot) => {
       return (
         shiftedSlotTime > bookedSlot.start.getTime() &&
@@ -89,7 +95,7 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
           .filter(filterSlots)
           .map((slot) => {
             return (
-              <Slot key={slot.toTimeString()} slot={slot} bookSlot={bookSlot} />
+              <Slot key={slot.toTimeString()} slot={slot} mutation={mutation} />
             );
           })}
       </div>
