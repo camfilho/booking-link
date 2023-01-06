@@ -1,9 +1,9 @@
 import React from "react";
 
-const Slot = ({ slot, bookSlot }) => {
+const Slot = ({ slot, mutation }) => {
   return (
     <div
-      onClick={(_e) => bookSlot(slot.toISOString(), duration)}
+      onClick={(_e) => mutation.mutate(slot.toISOString())}
       key={String(slot)}
       className="col-sm-3 btn btn-light btn-sm m-1"
     >

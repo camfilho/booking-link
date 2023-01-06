@@ -1,14 +1,13 @@
 import React from "react";
 
 export default function Calendar({date, setDate, duration, setDuration, setOpen}){
-  console.log("calendar")
-  console.log({date: date.split("T")[0]})
   return (
     <div className="col-sm-6">
       <div className="form-group">
         <label htmlFor="duration">Duration</label>
         <input
           type="number"
+          max={1440}
           className="form-control"
           id="duration"
           aria-describedby="duration"
@@ -21,7 +20,7 @@ export default function Calendar({date, setDate, duration, setDuration, setOpen}
         <input type="date" 
           className="form-control" 
           id="date"
-          value={date.split("T")[0]}
+          value={date}
           onChange={(e) => setDate(e.target.value)}
            />
       </div>
