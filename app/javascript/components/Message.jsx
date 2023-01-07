@@ -1,11 +1,19 @@
 import React from "react";
 
-export default function Succes({ message, success, setAlertData }) {
+export default function Succes({
+  message,
+  success,
+  setAlertData,
+  setSlotPickerData,
+  slotPickerData,
+}) {
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setAlertData({ open: false });
-    }, 6000);
-    return () => clearTimeout(timer);
+    if (success) {
+      const timer = setTimeout(() => {
+        setAlertData({ open: false });
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
   });
 
   return (
@@ -43,7 +51,14 @@ export default function Succes({ message, success, setAlertData }) {
             data-bs-theme="dark"
             style={{ position: "absolute", top: 0, right: 0 }}
             aria-label="Close"
-            onClick={() => setAlertData({ open: false })}
+            onClick={() => {
+              setSlotPickerData({
+                date:
+                  slotPickerData.date || new Date().toISOString().slice(0, 10),
+                duration: 30,
+              });
+              setAlertData({ open: false });
+            }}
           ></button>
         </div>
       )}
