@@ -1,24 +1,36 @@
-# README
+Warehouse Booking System
+================
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Warehouse Booking System is a platform that allows drivers to book a slot at a warehouse.
 
-Things you may want to cover:
+Getting Started
+-------------------------
 
-* Ruby version
+### With Docker
 
-* System dependencies
+The first step is to build the images by running the following command:
 
-* Configuration
+```bash
+$ make build
+```
 
-* Database creation
+All available commands:
 
-* Database initialization
+| command | description |
+|---------|-------------|
+| make start | Start the application |
+| make specs | Run all the specs |
+| make bash | access the bash inside the container |
+| make console | access rails c console |
 
-* How to run the test suite
+### Without Docker
 
-* Services (job queues, cache servers, search engines, etc.)
+1. Clone repo
+2. Install Postgres
+3. Configure psql credentials for your current role (google it)
+4. Configure `database.yml` if necessary.
+6. `$ bundle install`
+7. `$ bundle exec rails db:{create,migrate}`
+8. `$ bundle exec rails s`
+9. Access `localhost:3000`
 
-* Deployment instructions
-
-* ...
