@@ -15,6 +15,7 @@ $ make build
 ```
 
 Then run the application with `make start`.
+
 Access `localhost:3000`
 
 All available commands:
