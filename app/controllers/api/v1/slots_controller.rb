@@ -3,7 +3,13 @@ module Api
     class SlotsController < ApplicationController
       def index
         date = DateTime.parse(params[:date].to_s)
-        slots = Slot.get_by_date(date) + Slot.get_by_date(date + 1.day)
+        duration = params[:duration].to_i
+        day_in_min = 1440
+        slots = Slot.get_by_date(date)# + Slot.get_by_date(date + 1.day)
+        # get the extra amount of days based on duration
+        ((duration + day_in_min) / day_in_min).times do |i|
+          slots += Slot.get_by_date(date + i.day)
+        end
 
         render json: slots, each_serializer: SlotSerializer, status: :ok
       end

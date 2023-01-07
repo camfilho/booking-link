@@ -1,16 +1,15 @@
 import React from "react";
 import Slot from "./Slot";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useReactQuerySubscription from "./hooks/useReactQuerySubscription";
-import useGetSlots from './hooks/useGetSlots';
+import useGetSlots from "./hooks/useGetSlots";
 import usePostSlot from "./hooks/usePostSlot";
 
 const timeDivision = 15; //minutes
 
 const SlotPicker = ({ date, duration, setAlertData }) => {
-  useReactQuerySubscription({ date });
-  const { isLoading, data } = useGetSlots({ date });
+  useReactQuerySubscription();
+  const { isLoading, data } = useGetSlots({ date, duration });
   const mutation = usePostSlot({ setAlertData, duration });
 
   const bookedSlots = data?.map((slot) => {

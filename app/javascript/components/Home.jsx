@@ -5,15 +5,18 @@ import { HomeContainer } from "./HomeContainer";
 import Message from "./Message";
 
 export default () => {
-  const [date, setDate] = React.useState(new Date().toISOString().slice(0, 10));
-  const [duration, setDuration] = React.useState(30);
-
   const [alertData, setAlertData] = React.useState({
     message: "",
     success: false,
     open: false,
   });
 
+  const [slotPickerData, setSlotPickerData] = React.useState({
+    date: new Date().toISOString().slice(0, 10),
+    duration: 30,
+  });
+
+  const { date, duration } = slotPickerData;
   const { message, success, open } = alertData;
   return (
     <HomeContainer>
@@ -25,12 +28,7 @@ export default () => {
         />
       ) : (
         <>
-          <Calendar
-            date={date}
-            setDate={setDate}
-            duration={duration}
-            setDuration={setDuration}
-          />
+          <Calendar setSlotPickerData={setSlotPickerData} />
           <SlotPicker
             date={date}
             duration={duration}

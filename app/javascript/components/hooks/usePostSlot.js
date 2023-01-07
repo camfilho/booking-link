@@ -1,4 +1,4 @@
-import {useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function usePostSlot({ duration, setAlertData }) {
   const queryClient = useQueryClient();
