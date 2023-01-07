@@ -20,7 +20,7 @@ export default function usePostSlot({ duration, setAlertData }) {
             duration: duration,
           },
         }),
-      }).then((response, error) => {
+      }).then((response) => {
         if (response.ok) {
           return response.json();
         }

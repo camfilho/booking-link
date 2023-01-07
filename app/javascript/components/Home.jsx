@@ -25,6 +25,8 @@ export default () => {
           message={message}
           success={success}
           setAlertData={setAlertData}
+          setSlotPickerData={setSlotPickerData}
+          slotPickerData={slotPickerData}
         />
       ) : (
         <>

@@ -9,7 +9,11 @@ const timeDivision = 15; //minutes
 
 const SlotPicker = ({ date, duration, setAlertData }) => {
   useReactQuerySubscription();
-  const { isLoading, data } = useGetSlots({ date, duration });
+  const { isLoading, isError, data } = useGetSlots({
+    date,
+    duration,
+    setAlertData,
+  });
   const mutation = usePostSlot({ setAlertData, duration });
 
   const bookedSlots = data?.map((slot) => {
@@ -38,6 +42,7 @@ const SlotPicker = ({ date, duration, setAlertData }) => {
   }
 
   if (isLoading) return "Loading...";
+  if (isError) return "Error!";
 
   const filterSlots = (slot) => {
     const shiftedSlotTime = slot.getTime() + duration * 60 * 1000;
