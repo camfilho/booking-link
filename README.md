@@ -14,6 +14,8 @@ The first step is to build the images by running the following command:
 $ make build
 ```
 
+Then run the application with `make start`.
+
 All available commands:
 
 | command | description |
