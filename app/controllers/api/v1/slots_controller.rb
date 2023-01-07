@@ -17,6 +17,8 @@ module Api
                         company_name: company_name)
 
         if slot.save
+          ActionCable.server.broadcast('slots', 'success')
+
           render json: SlotSerializer.new(slot).to_json, status: :created
         else
           render json: slot.errors, status: :unprocessable_entity
