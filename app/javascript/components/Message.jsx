@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Succes({message, success, setAlertData}) {
+export default function Succes({ message, success, setAlertData }) {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAlertData({ open: false });
@@ -32,8 +32,10 @@ export default function Succes({message, success, setAlertData}) {
           <p>We weren't able to process your request</p>
           <hr />
           <p className="mb-0">Check the slot again.</p>
-          {Object.keys(message.error).map(key => (
-            <p key={key}>{key}: {message.error[key]}</p>
+          {Object.keys(message.error).map((key) => (
+            <p key={key}>
+              {key}: {message.error[key]}
+            </p>
           ))}
           <button
             type="button"
@@ -44,8 +46,7 @@ export default function Succes({message, success, setAlertData}) {
             onClick={() => setAlertData({ open: false })}
           ></button>
         </div>
-
-      ) }
+      )}
     </div>
   );
 }

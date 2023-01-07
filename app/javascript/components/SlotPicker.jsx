@@ -1,60 +1,17 @@
 import React from "react";
 import Slot from "./Slot";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useReactQuerySubscription from "./hooks/useReactQuerySubscription";
+import useGetSlots from './hooks/useGetSlots';
+import usePostSlot from "./hooks/usePostSlot";
 
 const timeDivision = 15; //minutes
 
 const SlotPicker = ({ date, duration, setAlertData }) => {
-  const queryClient = useQueryClient();
-
-  const getSlots = () => fetch("/api/v1/slots?date=" + String(date)).then((res) => res.json())
-  const { isLoading, error, data } = useQuery({ queryKey: [`querySlots${String(date)}`], queryFn: getSlots })
-
-  const mutation = useMutation({
-    mutationFn: (dateTime) => {
-      const token = document.querySelector('meta[name="csrf-token"]').content;
-
-      return fetch("/api/v1/slots", {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          slot: {
-            date_time: dateTime,
-            duration: duration,
-          },
-        }),
-      })
-      .then((response, error) => {
-        if(response.ok) {
-          return response.json()
-        }
-        return response.json().then(error => Promise.reject(error));
-      })
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries()
-      setAlertData({
-        message: {endDate: `${data.end.slice(0,10)} ${data.end.slice(11,16)}`, startDate: `${data.start.slice(0,10)} ${data.start.slice(11,16)}`},
-        success: true,
-        open: true,
-      });
-    },
-    onError: (error) => {
-      console.log(error)
-      setAlertData({
-        message: { error },
-        success: false,
-        open: true,
-      });
-      console.error(error);
-    },
-  });
+  useReactQuerySubscription({ date });
+  const { isLoading, data } = useGetSlots({ date });
+  const mutation = usePostSlot({ setAlertData, duration });
 
   const bookedSlots = data?.map((slot) => {
     return {
