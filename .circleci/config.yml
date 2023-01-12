@@ -1,0 +1,39 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.2.0
+        environment:
+            RAILS_ENV: test
+            DATABASE_URL: postgres://postgres:@127.0.0.1/circle_test
+      - image: postgres:9.6.2-alpine
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo apt-get update && \
+            sudo apt-get install -qy cmake pkg-config
+      - run:
+          command: bundle install
+  run_specs:
+    docker:
+      - image: cimg/ruby:3.2.0
+        environment:
+            RAILS_ENV: test
+            DATABASE_URL: postgres://postgres:@127.0.0.1/circle_test
+      - image: postgres:9.6.2-alpine
+    steps:
+      - checkout
+      - run:
+          command: bundle install
+      - run:
+          command: |
+            bundle install && \
+            bundle exec rake db:create db:migrate && \
+            bundle exec rspec .
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - run_specs
