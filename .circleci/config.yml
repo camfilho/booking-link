@@ -28,7 +28,10 @@ jobs:
       - run:
           command: bundle install
       - run:
-          command: bundle exec rspec .
+          command: |
+            bundle install && \
+            bundle exec rake db:create db:migrate && \
+            bundle exec rspec .
 workflows:
   build_and_test:
     jobs:
