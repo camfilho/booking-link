@@ -26,6 +26,8 @@ jobs:
     steps:
       - checkout
       - run:
+          command: bundle install
+      - run:
           command: bundle exec rspec .
 workflows:
   build_and_test:
